@@ -1,0 +1,213 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fusillade</title>
+    <link rel="icon" href="./sprites/Icon.ICO">
+
+    <!-- fix favicon 404 error -->
+    <link rel="icon" href="data:;base64,=">
+    
+    <script type="text/javascript" src="./perlin.js"></script>
+    <script type="text/javascript" src="./core/assetmanager.js"></script>
+    <script type="text/javascript" src="./core/timer.js"></script>
+    <script type="text/javascript" src="./core/gameengine.js"></script>
+    <script type="text/javascript" src="./util.js"></script>
+    <script type="text/javascript" src="./core/animator.js"></script>
+    <script type="text/javascript" src="./core/scenemanager.js"></script>
+    <script type="text/javascript" src="./components/extras.js"></script>
+    <script type="text/javascript" src="./objects/background.js"></script>
+    <script type="text/javascript" src="./projectiles/projectiles.js"></script>
+    <script type="text/javascript" src="./projectiles/scaleprojectiles.js"></script>
+    <script type="text/javascript" src="./projectiles/boomerang.js"></script>
+    <script type="text/javascript" src="./projectiles/deflectprojectile.js"></script>
+    <script type="text/javascript" src="./projectiles/dividingprojectile.js"></script>
+    <script type="text/javascript" src="./projectiles/ScaleBoomerProjectile.js"></script>
+    <script type="text/javascript" src="./projectiles/chasingprojectile.js"></script>
+    <script type="text/javascript" src="./projectiles/squareprojectile.js"></script>
+    <script type="text/javascript" src="./components/bounds.js"></script>
+    <script type="text/javascript" src="./characters/enemies.js"></script>
+    <script type="text/javascript" src="./characters/rutherford.js"></script>
+    <script type="text/javascript" src="./characters/Merchant.js"></script>
+    <script type="text/javascript" src="./characters/Fayere.js"></script>
+    <script type="text/javascript" src="./characters/Ais.js"></script>
+    <script type="text/javascript" src="./characters/Buck.js"></script>
+    <script type="text/javascript" src="./characters/Drumbuck.js"></script>
+    <script type="text/javascript" src="./characters/Fernight.js"></script>
+    <script type="text/javascript" src="./characters/Cyclops.js"></script>
+    <script type="text/javascript" src="./characters/Doublops.js"></script>
+    <script type="text/javascript" src="./characters/slippey.js"></script>
+    <script type="text/javascript" src="./characters/Raven.js"></script>
+    <script type="text/javascript" src="./characters/slime.js"></script>
+    <script type="text/javascript" src="./characters/polnariff.js"></script>
+    <script type="text/javascript" src="./characters/bunny.js"></script>
+    <script type="text/javascript" src="./characters/Wormy.js"></script>
+    <script type="text/javascript" src="./characters/Wormito.js"></script>
+    <script type="text/javascript" src="./characters/Wols.js"></script>
+    <script type="text/javascript" src="./characters/dummy.js"></script>
+    <script type="text/javascript" src="./characters/level2portals.js"></script>
+    <script type="text/javascript" src="./components/healthmpbar.js"></script>
+    <script type="text/javascript" src="./components/score.js"></script>
+    <script type="text/javascript" src="./characters/buckportal.js"></script>
+    <script type="text/javascript" src="./characters/propportal.js"></script>
+    <script type="text/javascript" src="./components/aftereffects.js"></script>
+    <script type="text/javascript" src="./objects/barrel.js"></script>
+    <script type="text/javascript" src="./objects/potion.js"></script>
+    <script type="text/javascript" src="./objects/obstacle.js"></script>
+    <script type="text/javascript" src="./characters/dine-o.js"></script>
+    <script type="text/javascript" src="./objects/coins.js"></script>
+    <script type="text/javascript" src="./maps.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
+    
+
+    <style>
+        body 
+        {
+            background: #0f0f0f;
+            text-align: center;
+        }
+
+        table, th, td
+        {
+            border: solid 2px white;
+            margin-top: -10px;
+            margin-right: 10px;
+        }
+
+        td {
+            max-width: 20em;
+        }
+
+        .rowh
+        {
+            color: red;
+            padding: 10px;
+        }
+
+        td
+        {
+            color: skyblue;
+            padding: 10px;
+        }
+
+        p
+        {
+            color: white;
+            text-align: center;
+            font-size: 28px;
+            margin-top: 10px;
+        }
+
+        .center
+        {
+            margin-left: auto;
+        }
+
+        label
+        {
+            color: red;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <canvas id="gameWorld" width="1280" height="720" style="background: black; border: 1px solid black" autofocus tabindex=1></canvas>
+    <br>
+
+    
+    <label for="debug" class="center">Debug:</label>
+    <input type="checkbox" id="debug" onclick="check()" class="center">
+    <label for="music" class="center" style="margin-left: 30px">Music:</label>
+    <input type="range" min="1" max="100" value="30" class="slider" id="music" onchange="changeMusicVolume()" class="center">
+    <label for="music" class="center" style="margin-left: 30px">Sfx:</label>
+    <input type="range" min="1" max="100" value="20" class="slider" id="sfx" onchange="changeEffectsVolume()" class="center">
+    <div id="instruction">
+        <p>Game Controls</p>
+        <div style="display:inline-flex">
+            <table class="center">
+                <tr class="row">
+                    <th class="rowh">WASD</th>
+                    <td>Move up, left, down, right</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">Left Mouse</th>
+                    <td>Basic Attack</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">G</th>
+                    <td>Turn Ascended Rutherford. Drains mana but increases damage on all attacks.</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">E</th>
+                    <td>Special attack. Press again right before the first one lands for a second attack.</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">Mouse Wheel</th>
+                    <td>Map zoom.</td>
+                </tr>
+                
+            </table>
+            <table class="center">
+                <tr class="row">
+                    <th class="rowh">C</th>
+                    <td>Lock/Unlock Camera</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">X</th>
+                    <td>Re-center Camera</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">I</th>
+                    <td>Auto Attack</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">1, 2, 3, 4 + F</th>
+                    <td>Use potions at respective slot</td>
+                </tr>
+                <tr class="row">
+                    <th class="rowh">Space</th>
+                    <td>Dash</td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+
+    <br>
+    <div>
+        <label for="meme">do not check</label>
+        <input type="checkbox" id="meme" onchange="PARAMS.meme = this.checked">
+    </div>
+
+    <script>
+        function check() {
+            PARAMS.debug = document.getElementById('debug').checked;
+        }
+        function changeEffectsVolume() {
+            ASSET_MANAGER.adjustEffectsVolume(document.getElementById('sfx').value/100);
+        }
+
+        function changeMusicVolume() {
+            ASSET_MANAGER.adjustBackgroundVolume(document.getElementById('music').value/100);
+        }
+
+
+        
+        function meme() {
+            PARAMS.meme = document.getElementById('meme').checked;
+        }
+
+        // trigger the default volume change
+        changeMusicVolume();
+        changeEffectsVolume();
+        // stop the broswer from scrolling on spacebar
+        window.addEventListener('keydown', function(e) {
+            if(e.keyCode == 32 && e.target == document.getElementById('gameWorld')) {
+                e.preventDefault();
+            }
+        });
+    </script>
+</body>
+</html>
