@@ -8,7 +8,7 @@ class Rutherford {
 
         this.scale = 2;
 
-        this.damage = 15;
+        this.damage = 80;
 
         this.action = 0; // 0 = idle, 1 = run, 2 = attack, 3 = transform
 
